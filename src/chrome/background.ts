@@ -8,22 +8,18 @@ export {}
  *  and when Chrome is updated to a new version. */
 const blocked = ["netflix.com", "instagram.com", "twitter.com"];
 const sendRemoveAllMessage = () => {
-    for (let i = 0; i < blocked.length; i++) {
         (getCurrentTab((tab) => {
-            if (tab?.includes(blocked[i])) {
-                const message: ChromeMessage = {
-                    from: Sender.React,
-                    message: "remove all",
-                  }
-                  getCurrentTabUId((id) => {
-                      id && chrome.tabs.sendMessage(
-                        id,
-                        message,
-                        (response) => {});
-                  });
-            }
+            const message: ChromeMessage = {
+                from: Sender.React,
+                message: "remove all",
+                }
+                getCurrentTabUId((id) => {
+                    id && chrome.tabs.sendMessage(
+                    id,
+                    message,
+                    (response) => {});
+                });
         }))
-      }
     };
 
 const playAudio = () => {
