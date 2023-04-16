@@ -17,6 +17,13 @@ function App() {
     })
   }, []);
 
+  useEffect(() => {
+    for (let i = 0; i < blocked.length; i++) {
+      if (url.includes(blocked[i])) {
+        sendRemoveAllMessage();
+      }
+    }
+  }, [url]);
   const sendTestMessage = () => {
     const message: ChromeMessage = {
       from: Sender.React,
@@ -50,14 +57,12 @@ function App() {
   };
 
   const sendRemoveAllMessage = () => {
-
     for (let i = 0; i < blocked.length; i++) {
       if (url.includes(blocked[i])) {
         const message: ChromeMessage = {
           from: Sender.React,
           message: "remove all",
         }
-  
         getCurrentTabUId((id) => {
             id && chrome.tabs.sendMessage(
               id,

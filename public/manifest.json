@@ -7,6 +7,12 @@
     "default_popup": "index.html",
     "default_title": "Open the popup"
   },
+  "background": {
+    "scripts": [
+      "./static/js/background.js"
+    ],
+    "persistent": false
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
@@ -16,7 +22,9 @@
     }
   ],
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "background",
+    "tabs"
   ],
   "optional_permissions": [
     "<all_urls>"

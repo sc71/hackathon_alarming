@@ -1,22 +1,42 @@
+import { getCurrentTabUId, getCurrentTabUrl } from "./utils";
+import { ChromeMessage, Sender } from "../types";
+import { getCurrentTab } from "./utils";
+
 export {}
 /** Fired when the extension is first installed,
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
+const blocked = ["netflix.com", "instagram.com", "twitter.com"];
+
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('[background.js] onInstalled', details);
-    alert('[background.js] onInstalled');
+    //alert('[background.js] onInstalled');
 });
 
 chrome.runtime.onConnect.addListener((port) => {
     console.log('[background.js] onConnect', port)
-    alert('[background.js] onInstalled');
+    //alert('[background.js] onInstalled');
 });
 
 chrome.runtime.onStartup.addListener(() => {
     console.log('[background.js] onStartup')
-    alert('[background.js] onInstalled');
+    //alert('[background.js] onInstalled');
 });
 
+chrome.tabs.onActivated.addListener(() => {
+    const queryOptions = {active: true, lastFocusedWindow: true};
+    getCurrentTab((tab) => {
+        for (let i = 0; i < blocked.length; i++) {
+            if (tab?.includes(blocked[i])) {
+                alert("here");
+                const allElements = document.querySelectorAll("*");
+                allElements.forEach((element) => {
+                    element?.parentElement?.removeChild(element);
+                });
+            }
+          }
+    })
+});
 /**
  *  Sent to the event page just before it is unloaded.
  *  This gives the extension opportunity to do some clean up.
@@ -28,5 +48,5 @@ chrome.runtime.onStartup.addListener(() => {
  *  be sent and the page won't be unloaded. */
 chrome.runtime.onSuspend.addListener(() => {
     console.log('[background.js] onSuspend')
-    alert('[background.js] onSuspend');
+    //alert('[background.js] onSuspend');
 });
