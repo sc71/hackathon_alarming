@@ -16,21 +16,21 @@ function App() {
     })
   }, []);
 
-  const sendTestMessage = () => {
-    const message: ChromeMessage = {
-      from: Sender.React,
-      message: "Hello from React",
-    }
+  // const sendTestMessage = () => {
+  //   const message: ChromeMessage = {
+  //     from: Sender.React,
+  //     message: "Hello from React",
+  //   }
 
-    getCurrentTabUId((id) => {
-      id && chrome.tabs.sendMessage(
-        id,
-        message,
-        (responseFromContent) => {
-          setResponseFromContent(responseFromContent);
-        });
-    });
-  };
+  //   getCurrentTabUId((id) => {
+  //     id && chrome.tabs.sendMessage(
+  //       id,
+  //       message,
+  //       (responseFromContent) => {
+  //         setResponseFromContent(responseFromContent);
+  //       });
+  //   });
+  // };
 
   const addCurrentUrl = () => {
     getCurrentTab((url) => {
@@ -66,18 +66,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>URL:</p>
-        <p>
-          {url}
-        </p>
+        <h3>You are currently at:</h3>
+        <p>{url}</p>
         <button onClick={addCurrentUrl}>Add Current URL to Blocked List</button>
-        {/* <button onClick={sendRemoveMessage}>Remove logo</button>
-        <button onClick={sendRemoveAllMessage}>Remove all</button> 
-        <button onClick={playSound}>Play Sound</button>*/}
-        <p>Response from content:</p>
-        <p>
-          {responseFromContent}
-        </p>
       </header>
     </div>
   );

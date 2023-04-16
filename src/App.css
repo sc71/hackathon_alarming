@@ -1,9 +1,10 @@
 .App {
   text-align: center;
+  font-family: 'Comic Sans MS', 'Comis Sans', sans-serif;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #3e314d;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -13,6 +14,14 @@
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+button {
+  background-color: #ffeaa7; /* pastel yellow */
+  border-radius: 5px; /* slightly rounded */
+  padding: 8px 16px; /* slightly padded */
+  font-family: 'Comic Sans MS', 'Comis Sans', sans-serif;
+}
+
+button:hover {
+  background-color: #edc361; /* darker yellow on hover */
+  cursor: pointer;
 }
