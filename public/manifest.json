@@ -24,13 +24,14 @@
   "permissions": [
     "activeTab",
     "background",
-    "tabs"
+    "tabs",
+    "audio"
   ],
   "optional_permissions": [
     "<all_urls>"
   ],
   "web_accessible_resources": [
-    "./src/chrome/sounds/alarm-1-with-reverberation-30031.mp3"
+    "./sounds/alarm-1-with-reverberation-30031.mp3"
   ],
   "icons": {
       "192": "logo192.png"

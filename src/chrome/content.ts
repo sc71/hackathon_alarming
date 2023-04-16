@@ -45,7 +45,7 @@ const messagesFromReactAppListener = (
                 position: absolute;
                 top: 0;
                 left: 0;
-                animation: flash 1s infinite;
+                animation: flash 0.5s infinite;
             }
             @keyframes flash {
                 0% { background-color: #FF0000; }

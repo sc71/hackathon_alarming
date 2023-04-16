@@ -22,11 +22,6 @@ const sendRemoveAllMessage = () => {
         }))
     };
 
-const playAudio = () => {
-    const myAudio = new Audio(chrome.runtime.getURL("alarming/src/chrome/sounds/alarm-1-with-reverberation-30031.mp3"));
-    myAudio.play();
-}
-
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('[background.js] onInstalled', details);
     //alert('[background.js] onInstalled');
@@ -42,31 +37,84 @@ chrome.runtime.onStartup.addListener(() => {
     //alert('[background.js] onInstalled');
 });
 
+const myAudio = new Audio();
+myAudio.src = chrome.runtime.getURL("./sounds/alarm-1-with-reverberation-30031.mp3");
+myAudio.loop = true;
+
+const playSound = () => {
+    if (myAudio.paused) {
+      myAudio.play();
+    }
+  }
+
+let activeTab: number | undefined;
+
 chrome.tabs.onActivated.addListener(() => {
     const queryOptions = {active: true, lastFocusedWindow: true};
     getCurrentTab((tab) => {
         for (let i = 0; i < blocked.length; i++) {
             if (tab?.includes(blocked[i])) {
+                getCurrentTabUId((currentID) => {
+                    activeTab = currentID;
+                })
                 sendRemoveAllMessage();
-                playAudio();
+                playSound();
                 break;
             }
-          }
+        }
     })
 });
+
 
 chrome.tabs.onUpdated.addListener(() => {
     const queryOptions = {active: true, lastFocusedWindow: true};
     getCurrentTab((tab) => {
         for (let i = 0; i < blocked.length; i++) {
             if (tab?.includes(blocked[i])) {
+                getCurrentTabUId((currentID) => {
+                    activeTab = currentID;
+                })
                 sendRemoveAllMessage();
-                playAudio();
+                playSound();
                 break;
             }
-          }
+        }
     })
 });
+
+chrome.tabs.onRemoved.addListener((tabId) => {
+    if (activeTab && tabId === activeTab) {
+        myAudio.pause();
+        myAudio.currentTime = 0;
+    }
+});
+
+// chrome.tabs.onActivated.addListener(() => {
+//     const queryOptions = {active: true, lastFocusedWindow: true};
+//     getCurrentTab((tab) => {
+//         for (let i = 0; i < blocked.length; i++) {
+//             if (tab?.includes(blocked[i])) {
+//                 sendRemoveAllMessage();
+//                 playSound();
+//                 break;
+//             }
+//           }
+//     })
+// });
+
+
+// chrome.tabs.onUpdated.addListener(() => {
+//     const queryOptions = {active: true, lastFocusedWindow: true};
+//     getCurrentTab((tab) => {
+//         for (let i = 0; i < blocked.length; i++) {
+//             if (tab?.includes(blocked[i])) {
+//                 sendRemoveAllMessage();
+//                 playSound();
+//                 break;
+//             }
+//           }
+//     })
+// });
 
 /**
  *  Sent to the event page just before it is unloaded.
