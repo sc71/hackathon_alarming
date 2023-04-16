@@ -26,6 +26,11 @@ const sendRemoveAllMessage = () => {
       }
     };
 
+const playAudio = () => {
+    const myAudio = new Audio(chrome.runtime.getURL("alarming/src/chrome/sounds/alarm-1-with-reverberation-30031.mp3"));
+    myAudio.play();
+}
+
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('[background.js] onInstalled', details);
     //alert('[background.js] onInstalled');
@@ -47,6 +52,7 @@ chrome.tabs.onActivated.addListener(() => {
         for (let i = 0; i < blocked.length; i++) {
             if (tab?.includes(blocked[i])) {
                 sendRemoveAllMessage();
+                playAudio();
                 break;
             }
           }
@@ -59,6 +65,7 @@ chrome.tabs.onUpdated.addListener(() => {
         for (let i = 0; i < blocked.length; i++) {
             if (tab?.includes(blocked[i])) {
                 sendRemoveAllMessage();
+                playAudio();
                 break;
             }
           }

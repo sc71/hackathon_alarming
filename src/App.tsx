@@ -38,6 +38,11 @@ function App() {
     });
   }
   
+  const playSound = () => {
+    const myAudio = new Audio(chrome.runtime.getURL("./chrome/sounds/alarm-1-with-reverberation-30031.mp3"));
+    myAudio.play();
+  }
+  
   // const sendRemoveMessage = () => {
   //   const message: ChromeMessage = {
   //     from: Sender.React,
@@ -83,6 +88,7 @@ function App() {
         <button onClick={addCurrentUrl}>Add Current URL to Blocked List</button>
         {/* <button onClick={sendRemoveMessage}>Remove logo</button>
         <button onClick={sendRemoveAllMessage}>Remove all</button> */}
+        <button onClick={playSound}>Play Sound</button>
         <p>Response from content:</p>
         <p>
           {responseFromContent}
