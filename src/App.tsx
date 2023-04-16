@@ -5,7 +5,6 @@ import { getCurrentTabUId, getCurrentTabUrl } from "./chrome/utils";
 import './App.css';
 import { query } from 'express';
 
-
 //https://medium.com/litslink/how-to-create-google-chrome-extension-using-react-js-5c9e343323ff
 function App() {
   const[url, setUrl] = useState("");
@@ -49,6 +48,22 @@ function App() {
     });
   };
 
+  const sendRemoveAllMessage = () => {
+    const message: ChromeMessage = {
+      from: Sender.React,
+      message: "remove all",
+    }
+
+    getCurrentTabUId((id) => {
+        id && chrome.tabs.sendMessage(
+          id,
+          message,
+          (response) => {
+            setResponseFromContent(responseFromContent);
+          });
+    });
+  };
+
   return (
     <div className="App">
       <header className="App-header">
@@ -59,6 +74,7 @@ function App() {
         </p>
         <button onClick={sendTestMessage}>SEND MESSAGE</button>
         <button onClick={sendRemoveMessage}>Remove logo</button>
+        <button onClick={sendRemoveAllMessage}>Remove all</button>
         <p>Response from content:</p>
         <p>
           {responseFromContent}

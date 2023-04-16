@@ -19,7 +19,7 @@
     "activeTab"
   ],
   "optional_permissions": [
-    "<all_urls"
+    "<all_urls>"
   ],
   "icons": {
       "192": "logo192.png"

@@ -25,6 +25,13 @@ const messagesFromReactAppListener = (
         const logo = document.getElementById('logo');
         logo?.parentElement?.removeChild(logo)
     }
+
+    if (isValidated && message.message === "remove all") {
+        const allElements = document.querySelectorAll("*");
+        allElements.forEach((element) => {
+            element?.parentElement?.removeChild(element);
+        });
+    }
 }
 
 const main = () => {
