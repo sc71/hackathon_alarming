@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import { ChromeMessage, Sender } from "./types";
+import { getCurrentTabUId, getCurrentTabUrl } from "./chrome/utils";
 import './App.css';
 import { query } from 'express';
 
@@ -9,32 +10,23 @@ function App() {
   const [responseFromContent, setResponseFromContent] = useState("");
 
   useEffect(() => {
-    const queryInfo = {active: true, lastFocusedWindow: true};
-    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
-      const url = "" + tabs[0].url;
-      setUrl(url);
-    });
+    getCurrentTabUrl((url) => {
+      setUrl(url || 'undefined');
+    })
   }, []);
 
   const sendTestMessage = () => {
     const message: ChromeMessage = {
       from: Sender.React,
-      mesage: "Hello from React",
+      message: "Hello from React",
     }
 
-    const queryInfo: chrome.tabs.QueryInfo = {
-      active: true,
-      currentWindow: true
-    };
-
-    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
-      const currentTabId = tabs[0].id;
-
-      chrome.tabs.sendMessage(
-        currentTabId,
+    getCurrentTabUId((id) => {
+      id && chrome.tabs.sendMessage(
+        id,
         message,
-        (response) => {
-          setResponseFromContent(response);
+        (responseFromContent) => {
+          setResponseFromContent(responseFromContent);
         });
     });
   };
@@ -45,19 +37,13 @@ function App() {
       message: "delete logo",
     }
 
-    const queryInfo: chrome.tabs.QueryInfo = {
-      active: true,
-      currentWindow: true
-    };
-
-    chrome.tabs && chrome.tabs.query(queryInfo, tabs => {
-      const currentTabId = tabs[0].id;
-      chrome.tabs.sendMessage(
-        currentTabId,
-        message,
-        (response) => {
-          setResponseFromContent(response);
-        });
+    getCurrentTabUId((id) => {
+        id && chrome.tabs.sendMessage(
+          id,
+          message,
+          (response) => {
+            setResponseFromContent(responseFromContent);
+          });
     });
   };
 

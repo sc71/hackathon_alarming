@@ -7,8 +7,19 @@
     "default_popup": "index.html",
     "default_title": "Open the popup"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["./static/js/content.js"],
+      "all_frames": false,
+      "run_at": "document_end"
+    }
+  ],
   "permissions": [
     "activeTab"
+  ],
+  "optional_permissions": [
+    "<all_urls"
   ],
   "icons": {
       "192": "logo192.png"
