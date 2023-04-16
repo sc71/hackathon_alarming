@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getCurrentTabUId, getCurrentTabWindowID, getCurrentTabUrl, getCurrentTab } from "./chrome/utils";
 import './App.css';
-import { collection, addDoc, onSnapshot, query, where, limit, getDocs } from "firebase/firestore";
+import { collection, doc, addDoc, getDocs, setDoc, query, where, limit } from "firebase/firestore";
 import { db } from './firebase';
 
 
@@ -16,11 +16,19 @@ function App() {
     })
   }, []);
 
-  const addCurrentUrl = () => {
-    getCurrentTab((url) => {
-      //TODO add url to firebase
+  const addCurrentUrl = async () => {
+    if (!loggedInEmail) return;
+  
+    getCurrentTab(async (url) => {
+      if (!url) return;
+      const blockedUrlsCollection = collection(db, "blockedUrls");
+      const newDocRef = doc(blockedUrlsCollection);
+      await setDoc(newDocRef, {
+        email: loggedInEmail,
+        url: url,
+      });
     });
-  }
+  };
   
   const playSound = () => {
     const myAudio = new Audio();
@@ -40,10 +48,10 @@ function App() {
     });
   }, []);
   useEffect(() => {
-    if (windowId !== null) {
+    if (windowId !== null && loggedInEmail !== null) {
       getLoggedInEmailFromStorage(windowId);
     }
-  }, [windowId]);
+  }, [windowId, loggedInEmail]);
   useEffect(() => {
     const handleWindowUnload = () => {
       if (windowId !== null) {
@@ -62,11 +70,13 @@ function App() {
       if (loggedInEmail) {
         setEmailSaved(true);
         setLoggedInEmail(loggedInEmail);
+        sendLoggedInEmailToBackground(loggedInEmail);
       } else {
         setEmailSaved(false);
       }
     });
   };
+
   const saveEmail = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (windowId == null) return;
@@ -87,10 +97,19 @@ function App() {
       chrome.storage.local.set({ [`loggedInEmail-${windowId}`]: email }, () => {
         setEmailSaved(true);
         setLoggedInEmail(email);
+        sendLoggedInEmailToBackground(email);
       });
     } catch (error) {
       console.error("Error saving email: ", error);
     }
+  };
+
+  // App.tsx
+  const sendLoggedInEmailToBackground = (email: string | null) => {
+    chrome.runtime.sendMessage({
+      message: "updateLoggedInEmail",
+      email,
+    });
   };
 
   return (

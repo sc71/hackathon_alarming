@@ -1,12 +1,37 @@
 import { getCurrentTabUId, getCurrentTabUrl } from "./utils";
 import { ChromeMessage, Sender } from "../types";
 import { getCurrentTab } from "./utils";
+import { query, collection, onSnapshot, where, limit } from "firebase/firestore";
+import { db } from './../firebase';
 
 export {}
 /** Fired when the extension is first installed,
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
-const blocked = ["netflix.com", "instagram.com", "twitter.com"];
+let blocked = ["netflix.com", "instagram.com", "twitter.com"];
+
+let loggedInEmail: string | null = null;
+
+const updateLoggedInEmail = (email: string | null) => {
+  loggedInEmail = email;
+  fetchBlockedUrls();
+};
+
+const fetchBlockedUrls = async () => {
+    if (loggedInEmail) {
+      const blockedUrlsCollection = collection(db, "blockedUrls");
+      const filteredBlockedUrls = query(
+        blockedUrlsCollection,
+        where("email", "==", loggedInEmail)
+      );
+      onSnapshot(filteredBlockedUrls, (snapshot) => {
+        const newBlockedUrls = snapshot.docs.map((doc) => doc.data().url);
+        blocked = Array.from(new Set([...blocked, ...newBlockedUrls]));
+      });
+    }
+};
+  
+
 const sendRemoveAllMessage = () => {
         (getCurrentTab((tab) => {
             const message: ChromeMessage = {
@@ -37,6 +62,14 @@ chrome.runtime.onStartup.addListener(() => {
     //alert('[background.js] onInstalled');
 });
 
+// background.ts
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.message === "updateLoggedInEmail") {
+        updateLoggedInEmail(request.email);
+    }
+});
+  
+
 const myAudio = new Audio();
 myAudio.src = chrome.runtime.getURL("./sounds/alarm-1-with-reverberation-30031.mp3");
 myAudio.loop = true;
@@ -50,20 +83,21 @@ const playSound = () => {
 let activeTab: number | undefined;
 
 chrome.tabs.onActivated.addListener(() => {
-    const queryOptions = {active: true, lastFocusedWindow: true};
+    const queryOptions = { active: true, lastFocusedWindow: true };
     getCurrentTab((tab) => {
-        for (let i = 0; i < blocked.length; i++) {
-            if (tab?.includes(blocked[i])) {
-                getCurrentTabUId((currentID) => {
-                    activeTab = currentID;
-                })
-                sendRemoveAllMessage();
-                playSound();
-                break;
-            }
+      for (let i = 0; i < blocked.length; i++) {
+        if (tab?.includes(blocked[i])) {
+          getCurrentTabUId((currentID) => {
+            activeTab = currentID;
+          });
+          sendRemoveAllMessage();
+          playSound();
+          break;
         }
-    })
+      }
+    });
 });
+  
 
 
 chrome.tabs.onUpdated.addListener(() => {
