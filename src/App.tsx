@@ -48,10 +48,10 @@ function App() {
     });
   }, []);
   useEffect(() => {
-    if (windowId !== null && loggedInEmail !== null) {
+    if (windowId !== null) {
       getLoggedInEmailFromStorage(windowId);
     }
-  }, [windowId, loggedInEmail]);
+  }, [windowId]);
   useEffect(() => {
     const handleWindowUnload = () => {
       if (windowId !== null) {
