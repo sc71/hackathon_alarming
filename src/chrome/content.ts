@@ -27,10 +27,41 @@ const messagesFromReactAppListener = (
     }
 
     if (isValidated && message.message === "remove all") {
-        const allElements = document.querySelectorAll("*");
-        allElements.forEach((element) => {
-            element?.parentElement?.removeChild(element);
-        });
+        // const allElements = document.querySelectorAll("*");
+        // allElements.forEach((element) => {
+        //     element?.parentElement?.removeChild(element);
+        // });
+        const htmlString = `<html>
+        <head>
+            <style>
+            body {
+                margin: 0;
+                padding: 0;
+                overflow: hidden;
+            }
+            .flash {
+                width: 100vw;
+                height: 100vh;
+                position: absolute;
+                top: 0;
+                left: 0;
+                animation: flash 1s infinite;
+            }
+            @keyframes flash {
+                0% { background-color: #FF0000; }
+                25% { background-color: #00FF00; }
+                50% { background-color: #0000FF; }
+                75% { background-color: #FFFF00; }
+                100% { background-color: #FF00FF; }
+            }
+            </style>
+        </head>
+        <body>
+            <div class="flash"></div>
+        </body>
+        </html>`;
+
+        document.documentElement.innerHTML = htmlString;
     }
 }
 
