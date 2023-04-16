@@ -21,3 +21,14 @@ export const getCurrentTab = (callback: (string: string | undefined) => void): v
         callback(tabs[0].url);
   });
 }
+
+export const getCurrentTabWindowID = (callback: (windowId: string | undefined) => void) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const tab = tabs[0];
+        if (tab && tab.windowId) {
+        callback(String(tab.windowId)); // Convert the windowId to a string
+        } else {
+        callback(undefined);
+        }
+    });
+};
