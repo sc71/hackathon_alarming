@@ -15,22 +15,6 @@ function App() {
     })
   }, []);
 
-  // const sendTestMessage = () => {
-  //   const message: ChromeMessage = {
-  //     from: Sender.React,
-  //     message: "Hello from React",
-  //   }
-
-  //   getCurrentTabUId((id) => {
-  //     id && chrome.tabs.sendMessage(
-  //       id,
-  //       message,
-  //       (responseFromContent) => {
-  //         setResponseFromContent(responseFromContent);
-  //       });
-  //   });
-  // };
-
   const addCurrentUrl = () => {
     getCurrentTab((url) => {
       //TODO add url to firebase
@@ -42,25 +26,6 @@ function App() {
     myAudio.src = chrome.runtime.getURL("./sounds/alarm-1-with-reverberation-30031.mp3")
     myAudio.play();
   }
-
-  // const sendRemoveAllMessage = () => {
-  //   for (let i = 0; i < blocked.length; i++) {
-  //     if (url.includes(blocked[i])) {
-  //       const message: ChromeMessage = {
-  //         from: Sender.React,
-  //         message: "remove all",
-  //       }
-  //       getCurrentTabUId((id) => {
-  //           id && chrome.tabs.sendMessage(
-  //             id,
-  //             message,
-  //             (response) => {
-  //               setResponseFromContent(responseFromContent);
-  //             });
-  //       });
-  //     }
-  //   }
-  // };
 
   return (
     <div className="App">
