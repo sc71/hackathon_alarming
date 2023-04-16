@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import logo from './logo.svg';
 import { ChromeMessage, Sender } from "./types";
-import { getCurrentTabUId, getCurrentTabUrl } from "./chrome/utils";
+import { getCurrentTabUId, getCurrentTabUrl, getCurrentTab } from "./chrome/utils";
 import './App.css';
 import { query } from 'express';
 
@@ -9,7 +9,6 @@ import { query } from 'express';
 function App() {
   const[url, setUrl] = useState("");
   const [responseFromContent, setResponseFromContent] = useState("");
-  const blocked = ["netflix.com", "instagram.com", "twitter.com"];
 
   useEffect(() => {
     getCurrentTabUrl((url) => {
@@ -17,13 +16,6 @@ function App() {
     })
   }, []);
 
-  // useEffect(() => {
-  //   for (let i = 0; i < blocked.length; i++) {
-  //     if (url.includes(blocked[i])) {
-  //       sendRemoveAllMessage();
-  //     }
-  //   }
-  // }, [url]);
   const sendTestMessage = () => {
     const message: ChromeMessage = {
       from: Sender.React,
@@ -39,6 +31,12 @@ function App() {
         });
     });
   };
+
+  const addCurrentUrl = () => {
+    getCurrentTab((url) => {
+      //TODO add url to firebase
+    });
+  }
   
   // const sendRemoveMessage = () => {
   //   const message: ChromeMessage = {
@@ -82,7 +80,7 @@ function App() {
         <p>
           {url}
         </p>
-        <button onClick={sendTestMessage}>SEND MESSAGE</button>
+        <button onClick={addCurrentUrl}>Add Current URL to Blocked List</button>
         {/* <button onClick={sendRemoveMessage}>Remove logo</button>
         <button onClick={sendRemoveAllMessage}>Remove all</button> */}
         <p>Response from content:</p>
