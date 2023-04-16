@@ -47,10 +47,24 @@ chrome.tabs.onActivated.addListener(() => {
         for (let i = 0; i < blocked.length; i++) {
             if (tab?.includes(blocked[i])) {
                 sendRemoveAllMessage();
+                break;
             }
           }
     })
 });
+
+chrome.tabs.onUpdated.addListener(() => {
+    const queryOptions = {active: true, lastFocusedWindow: true};
+    getCurrentTab((tab) => {
+        for (let i = 0; i < blocked.length; i++) {
+            if (tab?.includes(blocked[i])) {
+                sendRemoveAllMessage();
+                break;
+            }
+          }
+    })
+});
+
 /**
  *  Sent to the event page just before it is unloaded.
  *  This gives the extension opportunity to do some clean up.
