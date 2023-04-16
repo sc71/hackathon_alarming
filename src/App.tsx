@@ -117,24 +117,24 @@ function App() {
       <header className="App-header">
         <p>
           {emailSaved ? (
-            <p>Email saved: {loggedInEmail}</p>
+            <p className = "curEmail">email saved: {loggedInEmail}</p>
           ) : (
             <form onSubmit={saveEmail}>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder="enter your email"
                 required
               />
-              <button type="submit">Save Email</button>
+              <button type="submit">save email</button>
             </form>
           )}
         </p>
 
-        <h2>You are currently at:</h2>
-        <p>{url}</p>
-        <button onClick={addCurrentUrl}>ADD TO BLOCKED LIST</button>
+        <h2>you are currently at:</h2>
+        <p className = "curURL">{url}</p>
+        <button onClick={addCurrentUrl}>add to blocked list</button>
       </header>
     </div>
   );

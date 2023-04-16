@@ -17,15 +17,6 @@ const messagesFromReactAppListener = (
 
     const isValidated = validateSender(message, sender);
 
-    if (isValidated && message.message === 'Hello from React') {
-        response('Hello from content.js');
-    }
-
-    if (isValidated && message.message === "delete logo") {
-        const logo = document.getElementById('logo');
-        logo?.parentElement?.removeChild(logo)
-    }
-
     if (isValidated && message.message === "remove all") {
         // const allElements = document.querySelectorAll("*");
         // allElements.forEach((element) => {

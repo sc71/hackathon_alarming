@@ -19,6 +19,16 @@ h2 {
   padding: 0;
 }
 
+form {
+  margin: 10px;
+}
+
+form input[type="email"] {
+  height: 25px;
+  font-family: 'Comic Sans MS', 'Comis Sans', sans-serif;
+  padding: 5px;
+}
+
 button {
   background-color: #ffeaa7; /* pastel yellow */
   border-radius: 5px; /* slightly rounded */
@@ -29,4 +39,14 @@ button {
 button:hover {
   background-color: #edc361; /* darker yellow on hover */
   cursor: pointer;
+}
+
+.curEmail {
+  font-size:calc(7px + 2vmin);
+  padding:0px;
+  margin:0px;
+}
+
+.curURL {
+  max-width:450px;
 }
