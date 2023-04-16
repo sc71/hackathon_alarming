@@ -8,7 +8,6 @@ export {}
 /** Fired when the extension is first installed,
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
-let blocked = ["netflix.com", "instagram.com", "twitter.com"];
 
 let loggedInEmail: string | null = null;
 
@@ -17,20 +16,6 @@ const updateLoggedInEmail = (email: string | null) => {
   fetchBlockedUrls();
 };
 
-const fetchBlockedUrls = async () => {
-    if (loggedInEmail) {
-      const blockedUrlsCollection = collection(db, "blockedUrls");
-      const filteredBlockedUrls = query(
-        blockedUrlsCollection,
-        where("email", "==", loggedInEmail)
-      );
-      onSnapshot(filteredBlockedUrls, (snapshot) => {
-        const newBlockedUrls = snapshot.docs.map((doc) => doc.data().url);
-        blocked = Array.from(new Set([...blocked, ...newBlockedUrls]));
-      });
-    }
-};
-  
 
 const sendRemoveAllMessage = () => {
         (getCurrentTab((tab) => {
@@ -68,6 +53,63 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         updateLoggedInEmail(request.email);
     }
 });
+// Replace the blocked array with an object keyed by email
+let blocked: { [email: string]: string[] } = {};
+
+const fetchBlockedUrls = async () => {
+  if (loggedInEmail) {
+    const blockedUrlsCollection = collection(db, "blockedUrls");
+    const filteredBlockedUrls = query(
+      blockedUrlsCollection,
+      where("email", "==", loggedInEmail)
+    );
+    onSnapshot(filteredBlockedUrls, (snapshot) => {
+      // Update the blocked object with the fetched URLs for the logged-in email
+      if (loggedInEmail) blocked[loggedInEmail] = snapshot.docs.map((doc) => doc.data().url);
+    });
+  } else {
+    // Remove the blocklist for the email when no user is logged in
+    if (loggedInEmail) {
+      delete blocked[loggedInEmail];
+    }
+  }
+};
+
+chrome.tabs.onActivated.addListener(() => {
+    const queryOptions = { active: true, lastFocusedWindow: true };
+    getCurrentTab((tab) => {
+      if (loggedInEmail && blocked[loggedInEmail]) {
+        for (let i = 0; i < blocked[loggedInEmail].length; i++) {
+          if (tab?.includes(blocked[loggedInEmail][i])) {
+            getCurrentTabUId((currentID) => {
+              activeTab = currentID;
+            });
+            sendRemoveAllMessage();
+            playSound();
+            break;
+          }
+        }
+      }
+    });
+  });
+  
+  chrome.tabs.onUpdated.addListener(() => {
+    const queryOptions = { active: true, lastFocusedWindow: true };
+    getCurrentTab((tab) => {
+      if (loggedInEmail && blocked[loggedInEmail]) {
+        for (let i = 0; i < blocked[loggedInEmail].length; i++) {
+          if (tab?.includes(blocked[loggedInEmail][i])) {
+            getCurrentTabUId((currentID) => {
+              activeTab = currentID;
+            });
+            sendRemoveAllMessage();
+            playSound();
+            break;
+          }
+        }
+      }
+    });
+  });
   
 
 const myAudio = new Audio();
@@ -82,39 +124,6 @@ const playSound = () => {
 
 let activeTab: number | undefined;
 
-chrome.tabs.onActivated.addListener(() => {
-    const queryOptions = { active: true, lastFocusedWindow: true };
-    getCurrentTab((tab) => {
-      for (let i = 0; i < blocked.length; i++) {
-        if (tab?.includes(blocked[i])) {
-          getCurrentTabUId((currentID) => {
-            activeTab = currentID;
-          });
-          sendRemoveAllMessage();
-          playSound();
-          break;
-        }
-      }
-    });
-});
-  
-
-
-chrome.tabs.onUpdated.addListener(() => {
-    const queryOptions = {active: true, lastFocusedWindow: true};
-    getCurrentTab((tab) => {
-        for (let i = 0; i < blocked.length; i++) {
-            if (tab?.includes(blocked[i])) {
-                getCurrentTabUId((currentID) => {
-                    activeTab = currentID;
-                })
-                sendRemoveAllMessage();
-                playSound();
-                break;
-            }
-        }
-    })
-});
 
 chrome.tabs.onRemoved.addListener((tabId) => {
     if (activeTab && tabId === activeTab) {
@@ -122,33 +131,6 @@ chrome.tabs.onRemoved.addListener((tabId) => {
         myAudio.currentTime = 0;
     }
 });
-
-// chrome.tabs.onActivated.addListener(() => {
-//     const queryOptions = {active: true, lastFocusedWindow: true};
-//     getCurrentTab((tab) => {
-//         for (let i = 0; i < blocked.length; i++) {
-//             if (tab?.includes(blocked[i])) {
-//                 sendRemoveAllMessage();
-//                 playSound();
-//                 break;
-//             }
-//           }
-//     })
-// });
-
-
-// chrome.tabs.onUpdated.addListener(() => {
-//     const queryOptions = {active: true, lastFocusedWindow: true};
-//     getCurrentTab((tab) => {
-//         for (let i = 0; i < blocked.length; i++) {
-//             if (tab?.includes(blocked[i])) {
-//                 sendRemoveAllMessage();
-//                 playSound();
-//                 break;
-//             }
-//           }
-//     })
-// });
 
 /**
  *  Sent to the event page just before it is unloaded.
