@@ -9,6 +9,7 @@ import { query } from 'express';
 function App() {
   const[url, setUrl] = useState("");
   const [responseFromContent, setResponseFromContent] = useState("");
+  const blocked = ["netflix.com", "instagram.com", "twitter.com"];
 
   useEffect(() => {
     getCurrentTabUrl((url) => {
@@ -49,19 +50,24 @@ function App() {
   };
 
   const sendRemoveAllMessage = () => {
-    const message: ChromeMessage = {
-      from: Sender.React,
-      message: "remove all",
-    }
 
-    getCurrentTabUId((id) => {
-        id && chrome.tabs.sendMessage(
-          id,
-          message,
-          (response) => {
-            setResponseFromContent(responseFromContent);
-          });
-    });
+    for (let i = 0; i < blocked.length; i++) {
+      if (url.includes(blocked[i])) {
+        const message: ChromeMessage = {
+          from: Sender.React,
+          message: "remove all",
+        }
+  
+        getCurrentTabUId((id) => {
+            id && chrome.tabs.sendMessage(
+              id,
+              message,
+              (response) => {
+                setResponseFromContent(responseFromContent);
+              });
+        });
+      }
+    }
   };
 
   return (
