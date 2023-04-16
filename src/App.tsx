@@ -65,9 +65,9 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h3>You are currently at:</h3>
+        <h2>You are currently at:</h2>
         <p>{url}</p>
-        <button onClick={addCurrentUrl}>Add Current URL to Blocked List</button>
+        <button onClick={addCurrentUrl}>ADD TO BLOCKED LIST</button>
       </header>
     </div>
   );

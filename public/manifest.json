@@ -1,6 +1,6 @@
 {
   "short_name": "React App",
-  "name": "Create React App Sample",
+  "name": "Extreme Focus",
   "manifest_version": 2,
   "version": "1.0",
   "browser_action": {
