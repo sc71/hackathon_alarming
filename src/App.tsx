@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import logo from './logo.svg';
-import { ChromeMessage, Sender } from "./types";
+//import { ChromeMessage, Sender } from "./types";
 import { getCurrentTabUId, getCurrentTabUrl, getCurrentTab } from "./chrome/utils";
 import './App.css';
-import { query } from 'express';
+// import { query } from 'express';
 
 //https://medium.com/litslink/how-to-create-google-chrome-extension-using-react-js-5c9e343323ff
 function App() {
