@@ -7,6 +7,24 @@ export {}
  *  when the extension is updated to a new version,
  *  and when Chrome is updated to a new version. */
 const blocked = ["netflix.com", "instagram.com", "twitter.com"];
+const sendRemoveAllMessage = () => {
+    for (let i = 0; i < blocked.length; i++) {
+        (getCurrentTab((tab) => {
+            if (tab?.includes(blocked[i])) {
+                const message: ChromeMessage = {
+                    from: Sender.React,
+                    message: "remove all",
+                  }
+                  getCurrentTabUId((id) => {
+                      id && chrome.tabs.sendMessage(
+                        id,
+                        message,
+                        (response) => {});
+                  });
+            }
+        }))
+      }
+    };
 
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('[background.js] onInstalled', details);
@@ -28,11 +46,7 @@ chrome.tabs.onActivated.addListener(() => {
     getCurrentTab((tab) => {
         for (let i = 0; i < blocked.length; i++) {
             if (tab?.includes(blocked[i])) {
-                alert("here");
-                const allElements = document.querySelectorAll("*");
-                allElements.forEach((element) => {
-                    element?.parentElement?.removeChild(element);
-                });
+                sendRemoveAllMessage();
             }
           }
     })

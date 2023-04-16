@@ -17,13 +17,13 @@ function App() {
     })
   }, []);
 
-  useEffect(() => {
-    for (let i = 0; i < blocked.length; i++) {
-      if (url.includes(blocked[i])) {
-        sendRemoveAllMessage();
-      }
-    }
-  }, [url]);
+  // useEffect(() => {
+  //   for (let i = 0; i < blocked.length; i++) {
+  //     if (url.includes(blocked[i])) {
+  //       sendRemoveAllMessage();
+  //     }
+  //   }
+  // }, [url]);
   const sendTestMessage = () => {
     const message: ChromeMessage = {
       from: Sender.React,
@@ -40,40 +40,40 @@ function App() {
     });
   };
   
-  const sendRemoveMessage = () => {
-    const message: ChromeMessage = {
-      from: Sender.React,
-      message: "delete logo",
-    }
+  // const sendRemoveMessage = () => {
+  //   const message: ChromeMessage = {
+  //     from: Sender.React,
+  //     message: "delete logo",
+  //   }
 
-    getCurrentTabUId((id) => {
-        id && chrome.tabs.sendMessage(
-          id,
-          message,
-          (response) => {
-            setResponseFromContent(responseFromContent);
-          });
-    });
-  };
+  //   getCurrentTabUId((id) => {
+  //       id && chrome.tabs.sendMessage(
+  //         id,
+  //         message,
+  //         (response) => {
+  //           setResponseFromContent(responseFromContent);
+  //         });
+  //   });
+  // };
 
-  const sendRemoveAllMessage = () => {
-    for (let i = 0; i < blocked.length; i++) {
-      if (url.includes(blocked[i])) {
-        const message: ChromeMessage = {
-          from: Sender.React,
-          message: "remove all",
-        }
-        getCurrentTabUId((id) => {
-            id && chrome.tabs.sendMessage(
-              id,
-              message,
-              (response) => {
-                setResponseFromContent(responseFromContent);
-              });
-        });
-      }
-    }
-  };
+  // const sendRemoveAllMessage = () => {
+  //   for (let i = 0; i < blocked.length; i++) {
+  //     if (url.includes(blocked[i])) {
+  //       const message: ChromeMessage = {
+  //         from: Sender.React,
+  //         message: "remove all",
+  //       }
+  //       getCurrentTabUId((id) => {
+  //           id && chrome.tabs.sendMessage(
+  //             id,
+  //             message,
+  //             (response) => {
+  //               setResponseFromContent(responseFromContent);
+  //             });
+  //       });
+  //     }
+  //   }
+  // };
 
   return (
     <div className="App">
@@ -83,8 +83,8 @@ function App() {
           {url}
         </p>
         <button onClick={sendTestMessage}>SEND MESSAGE</button>
-        <button onClick={sendRemoveMessage}>Remove logo</button>
-        <button onClick={sendRemoveAllMessage}>Remove all</button>
+        {/* <button onClick={sendRemoveMessage}>Remove logo</button>
+        <button onClick={sendRemoveAllMessage}>Remove all</button> */}
         <p>Response from content:</p>
         <p>
           {responseFromContent}
