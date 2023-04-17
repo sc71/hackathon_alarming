@@ -8,7 +8,6 @@ import { db } from './firebase';
 //https://medium.com/litslink/how-to-create-google-chrome-extension-using-react-js-5c9e343323ff
 function App() {
   const[url, setUrl] = useState("");
-  const [isAdded, setIsAdded] = useState(false);
   const [responseFromContent, setResponseFromContent] = useState("");
 
   useEffect(() => {
@@ -29,7 +28,6 @@ function App() {
         url: url,
       });
     });
-    setIsAdded(true);
   };
   
   const playSound = () => {
@@ -152,10 +150,9 @@ function App() {
 
         <h2>you are currently at:</h2>
         <p className = "curURL">{url}</p>
-        {isAdded ? (
-        <p>website is in blocked list!</p>
-      ) : (
+        
         <button onClick={addCurrentUrl}>add to blocked list</button>
+        <button onClick={() => removeUrl(url)}>delete url</button>
       </header>
     </div>
   );
