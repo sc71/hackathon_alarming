@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { getCurrentTabUId, getCurrentTabWindowID, getCurrentTabUrl, getCurrentTab } from "./chrome/utils";
 import './App.css';
-import { collection, doc, addDoc, getDocs, setDoc, query, where, limit } from "firebase/firestore";
+import { collection, doc, addDoc, getDocs, setDoc, query, where, limit, DocumentData, DocumentReference, deleteDoc } from "firebase/firestore";
 import { db } from './firebase';
 
 
@@ -104,6 +104,22 @@ function App() {
     }
   };
 
+  const removeUrl = async (url: string) => {
+    if (!loggedInEmail) return;
+    const blockedUrlsCollection = collection(db, "blockedUrls");
+    const querySnapshot = await getDocs(
+      query(blockedUrlsCollection, where("email", "==", loggedInEmail), where("url", "==", url))
+    );
+    querySnapshot.forEach(async (docSnapshot) => {
+      const docRef = docSnapshot.ref;
+      const docData = docSnapshot.data();
+      if (docData) {
+        await deleteDoc(docRef);
+      }
+    });
+  };
+  
+
   // App.tsx
   const sendLoggedInEmailToBackground = (email: string | null) => {
     chrome.runtime.sendMessage({
@@ -135,6 +151,7 @@ function App() {
         <h2>you are currently at:</h2>
         <p className = "curURL">{url}</p>
         <button onClick={addCurrentUrl}>add to blocked list</button>
+        <button onClick={() => removeUrl(url)}>delete url</button>
       </header>
     </div>
   );
