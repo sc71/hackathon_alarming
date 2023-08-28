@@ -1,6 +1,6 @@
 # Running the Chrome extension
 
-Run 'git clone' to get a local copy of the repo. Run 'npm run build' to build the app, then go to 'chrome://extensions' and turn on Developer mode. Click 'Load unpacked' and select the build folder containing the extension files from your computer.
+Run `git clone` to get a local copy of the repo. Run `npm run build` to build the app, then go to `chrome://extensions` and turn on Developer mode. Click `Load unpacked` and select the build folder containing the extension files from your computer.
 
 # Getting Started with Create React App
 
